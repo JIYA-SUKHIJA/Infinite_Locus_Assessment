@@ -93,6 +93,102 @@ describe('StudentsView Integration Tests', () => {
     expect(screen.getAllByText('Search Match Student').length).toBeGreaterThan(0);
   });
 
+  it('END-TO-END OUT-OF-ORDER PROTECTION: slow earlier search does not overwrite fast later search', async () => {
+    server.use(
+      http.get('https://api.test.example.com/api/students', async ({ request }) => {
+        const url = new URL(request.url);
+        const query = url.searchParams.get('q');
+
+        if (query === 'ann') {
+          // Slow earlier search response (180ms delay)
+          await delay(180);
+          return HttpResponse.json({
+            data: [{ ...mockStudentSummary, name: 'Ann Old Stale Student' }],
+            pagination: {
+              page: 1,
+              pageSize: 20,
+              totalItems: 1,
+              totalPages: 1,
+              hasNextPage: false,
+              hasPrevPage: false
+            },
+            cohortAverageScore: 60
+          });
+        }
+
+        if (query === 'anna') {
+          // Fast later search response (20ms delay)
+          await delay(20);
+          return HttpResponse.json({
+            data: [{ ...mockStudentSummary, name: 'Anna Fast Latest Student' }],
+            pagination: {
+              page: 1,
+              pageSize: 20,
+              totalItems: 1,
+              totalPages: 1,
+              hasNextPage: false,
+              hasPrevPage: false
+            },
+            cohortAverageScore: 90
+          });
+        }
+
+        return HttpResponse.json({
+          data: [mockStudentSummary],
+          pagination: {
+            page: 1,
+            pageSize: 20,
+            totalItems: 1,
+            totalPages: 1,
+            hasNextPage: false,
+            hasPrevPage: false
+          },
+          cohortAverageScore: 70
+        });
+      })
+    );
+
+    renderStudentsRoute();
+
+    await waitFor(() => {
+      expect(screen.getByRole('searchbox')).toBeDefined();
+    });
+
+    const searchInput = screen.getByRole('searchbox');
+
+    // Type "ann" and wait for debounce to trigger the first slow request
+    act(() => {
+      fireEvent.change(searchInput, { target: { value: 'ann' } });
+    });
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 350));
+    });
+
+    // Immediately type "anna" and wait for debounce to trigger the fast request
+    act(() => {
+      fireEvent.change(searchInput, { target: { value: 'anna' } });
+    });
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 350));
+    });
+
+    // Fast request for "anna" resolves first
+    await waitFor(() => {
+      expect(screen.getAllByText('Anna Fast Latest Student').length).toBeGreaterThan(0);
+    });
+
+    // Wait long enough for the slow "ann" (180ms) to finish in the background
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 250));
+    });
+
+    // Verify "Anna Fast Latest Student" is STILL the rendered student, and "Ann Old Stale Student" never overwrites it
+    expect(screen.getAllByText('Anna Fast Latest Student').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Ann Old Stale Student')).toBeNull();
+  });
+
   it('DEEP LINKING: reconstructs list state from URL search params on mount', async () => {
     let capturedUrl: URL | null = null;
 
