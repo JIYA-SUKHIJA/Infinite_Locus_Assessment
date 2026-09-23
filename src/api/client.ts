@@ -53,6 +53,22 @@ export class ApiValidationError extends Error {
   }
 }
 
+/**
+ * Converts any caught error into a strongly-typed ApiError without unsafe casts.
+ */
+export function toApiError(err: unknown): ApiError {
+  if (err instanceof ApiError) {
+    return err;
+  }
+  if (err instanceof ApiValidationError) {
+    return new ApiError(502, 'SCHEMA_VALIDATION_ERROR', err.message, 'req_validation_failure');
+  }
+  if (err instanceof Error) {
+    return new ApiError(0, 'UNKNOWN_ERROR', err.message, 'req_err_unknown');
+  }
+  return new ApiError(0, 'UNKNOWN_ERROR', String(err), 'req_err_unknown');
+}
+
 export interface FetchApiOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
   body?: unknown;
@@ -73,7 +89,11 @@ export async function fetchApi<T>(
   options: FetchApiOptions = {}
 ): Promise<T> {
   const config = getApiConfig();
-  const url = `${config.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  let base = config.baseUrl;
+  if (!base && typeof window !== 'undefined' && window.location?.origin && window.location.origin !== 'null') {
+    base = window.location.origin;
+  }
+  const url = base ? `${base}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}` : endpoint;
 
   const requestHeaders: Record<string, string> = {
     Accept: 'application/json',
