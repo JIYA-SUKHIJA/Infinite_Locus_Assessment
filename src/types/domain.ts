@@ -26,7 +26,7 @@ export interface Attempt {
   readonly maxScore: number;
   readonly passed: boolean;
   readonly timestamp: string; // ISO 8601 date string
-  readonly metadata?: Record<string, unknown>;
+  readonly metadata?: Record<string, unknown> | undefined;
 }
 
 export interface CompetencyWithLatestAttempt {
@@ -71,9 +71,9 @@ export interface StudentDetail {
  * Student updatable payload fields for PATCH
  */
 export interface StudentPatchInput {
-  readonly name?: string;
-  readonly email?: string;
-  readonly cohort?: string;
+  readonly name?: string | undefined;
+  readonly email?: string | undefined;
+  readonly cohort?: string | undefined;
 }
 
 /**
@@ -84,7 +84,7 @@ export interface CreateAttemptInput {
   readonly score: number;
   readonly maxScore: number;
   readonly passed: boolean;
-  readonly metadata?: Record<string, unknown>;
+  readonly metadata?: Record<string, unknown> | undefined;
 }
 
 /**
