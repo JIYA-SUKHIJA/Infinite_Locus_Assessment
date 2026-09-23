@@ -269,6 +269,16 @@
   flex-direction: column;
 }
 
+.studentLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.studentLink:hover .studentName {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
 .studentName {
   font-weight: 600;
   color: #0f172a;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { StudentSummary } from '../../types/domain';
 import { UseStudentsParams } from '../../api/hooks/useStudents';
 import { StatusBadge } from './StatusBadge';
@@ -44,6 +45,8 @@ export const StudentTable: React.FC<StudentTableProps> = ({
   sortOrder,
   onSortChange
 }) => {
+  const location = useLocation();
+
   return (
     <div className={styles.tableContainer}>
       {/* Desktop & Tablet Table Layout */}
@@ -94,7 +97,14 @@ export const StudentTable: React.FC<StudentTableProps> = ({
             <tr key={student.id} className={styles.tableRow}>
               <td>
                 <div className={styles.studentNameCell}>
-                  <span className={styles.studentName}>{student.name}</span>
+                  <Link
+                    to={`/students/${encodeURIComponent(student.id)}`}
+                    state={{ from: location.search }}
+                    className={styles.studentLink}
+                    aria-label={`View details for ${student.name}`}
+                  >
+                    <span className={styles.studentName}>{student.name}</span>
+                  </Link>
                   <span className={styles.studentEmail}>{student.email}</span>
                 </div>
               </td>
@@ -128,7 +138,13 @@ export const StudentTable: React.FC<StudentTableProps> = ({
           <div key={student.id} className={styles.studentCard}>
             <div className={styles.cardHeader}>
               <div>
-                <h3 className={styles.cardStudentName}>{student.name}</h3>
+                <Link
+                  to={`/students/${encodeURIComponent(student.id)}`}
+                  state={{ from: location.search }}
+                  className={styles.studentLink}
+                >
+                  <h3 className={styles.cardStudentName}>{student.name}</h3>
+                </Link>
                 <p className={styles.cardStudentEmail}>{student.email}</p>
               </div>
               <StatusBadge status={student.readinessStatus} />

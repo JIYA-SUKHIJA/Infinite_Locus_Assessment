@@ -5,3 +5,4 @@ export * from './StatusBadge';
 export * from './StudentTable';
 export * from './Pagination';
 export * from './useStudentsQueryParams';
+export * from './[id]';
