@@ -27,7 +27,7 @@ export function useStudents(params: UseStudentsParams = {}) {
   const { query, page = 1, pageSize = 20, readinessStatus, sortBy, sortOrder } = params;
 
   const executeFetch = useCallback(
-    async (isRefresh = false) => {
+    async () => {
       // Abort previous in-flight request
       if (activeAbortControllerRef.current) {
         activeAbortControllerRef.current.abort();
@@ -37,8 +37,9 @@ export function useStudents(params: UseStudentsParams = {}) {
       activeAbortControllerRef.current = abortController;
       const currentSeq = ++sequenceRef.current;
 
+      // Distinguish first-load (loading) vs subsequent updates with existing data (refreshing)
       setState((prev) => {
-        if (isRefresh && prev.data !== null) {
+        if (prev.data !== null) {
           return { status: 'refreshing', data: prev.data, error: null };
         }
         return { status: 'loading', data: null, error: null };
@@ -90,7 +91,7 @@ export function useStudents(params: UseStudentsParams = {}) {
   );
 
   useEffect(() => {
-    void executeFetch(false);
+    void executeFetch();
 
     return () => {
       // Cleanup on unmount or param change
@@ -101,7 +102,7 @@ export function useStudents(params: UseStudentsParams = {}) {
   }, [executeFetch]);
 
   const refetch = useCallback(() => {
-    return executeFetch(true);
+    return executeFetch();
   }, [executeFetch]);
 
   return {
