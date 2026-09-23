@@ -1,10 +1,14 @@
 import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { StudentsView } from './routes/students';
 
 export const App: React.FC = () => {
   return (
-    <div>
-      <h1>Student Readiness Control Center</h1>
-      <p>Phase 1: Typed API Boundary &amp; Data Layer</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/students" element={<StudentsView />} />
+        <Route path="*" element={<Navigate to="/students" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
