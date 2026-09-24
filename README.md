@@ -120,6 +120,37 @@ To prevent cross-tenant enumeration attacks (discovering whether a student ID ex
 
 ---
 
+## Phase 4 — Attempt Submission & Student Edit Forms
+
+Phase 4 turns the detail view entry points into real, production-ready form modals wired to `useSubmitAttempt` and `usePatchStudent` mutations with optimistic concurrency and idempotency guarantees.
+
+### 1. Attempt Submission Form & Idempotency Key Lifecycle
+- **Modal Component**: [`AttemptSubmissionForm.tsx`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/routes/students/%5Bid%5D/AttemptSubmissionForm.tsx).
+- **Idempotency Lifecycle**:
+  - A fresh UUID `Idempotency-Key` is generated on every new modal open session via `crypto.randomUUID()` (or fallback generator).
+  - **Key Retention on Retry**: If a network failure occurs (HTTP status 0 / `NETWORK_ERROR`), the same `Idempotency-Key` is retained for subsequent retry attempts of that exact submission.
+  - **Key Regeneration on Reopen**: Closing the dialog and opening it for a new attempt session generates a brand new UUID key, preventing unintended server-side replay.
+- **Double-Submit Prevention**: Uses an `isSubmittingRef` lock and disabled button states during the pending `loading` cycle, ensuring rapid double-clicks trigger only a single network request (`mswCallCount === 1`).
+- **Honest Network Failure Messaging**: When network errors occur where the client cannot determine if the server received the payload, the UI displays an explicit reassurance alert explaining that retrying is safe due to idempotency key protection.
+
+### 2. Student Edit Form & Optimistic Concurrency (HTTP 409 Conflict)
+- **Modal Component**: [`StudentEditForm.tsx`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/routes/students/%5Bid%5D/StudentEditForm.tsx).
+- **Allowlisted Fields**: Only mutable fields (`name`, `email`, `cohort`) are editable. System-owned properties (`id`, `readinessStatus`, `summaryScore`, `competencies`, `version`, `createdAt`, `updatedAt`) are immutable.
+- **`If-Match` Concurrency**: Transmits `student.version` as `expectedVersion` via the HTTP `If-Match: "<version>"` header.
+- **Distinct Conflict UI (HTTP 409)**:
+  - When the server detects that another session modified the record, `usePatchStudent` emits `status: 'conflict'`.
+  - The UI renders a structurally distinct `.conflictAlert` banner with heading `"Record Conflict Detected (HTTP 409)"` and two explicit resolution paths:
+    1. **"Reload Latest & Reapply"**: Triggers `onRefreshLatest()` to fetch the updated student entity and version without losing local intent.
+    2. **"Discard Changes"**: Closes the dialog and resets the state.
+  - This is structurally distinguished from generic 500 errors (which render `.errorAlert` with standard retry text and no conflict resolution actions).
+
+### 3. Accessible Dialogs & Focus Management
+- Accessible modal dialogs with `role="dialog"`, `aria-modal="true"`, and labeled headers.
+- Input validation with real-time feedback, `aria-invalid="true"`, and `aria-describedby` error associations.
+- Keyboard support: `Escape` key dismisses modals when not actively loading, and initial input focus is automated on open.
+
+---
+
 ## Directory Structure
 
 ```
@@ -147,11 +178,13 @@ src/
 │       ├── Pagination.tsx         # Page boundary controls
 │       ├── StudentsView.tsx       # List view coordinating all discriminated states
 │       ├── StudentsView.module.css # List view accessible styling
-│       └── [id]/                  # [NEW] Detail view sub-route
+│       └── [id]/                  # Detail view sub-route
 │           ├── index.ts           # Detail component exports
-│           ├── CompetencyList.tsx # Dynamic competency evidence + Phase 4 stubs
+│           ├── CompetencyList.tsx # Dynamic competency evidence + attempt trigger
 │           ├── StudentDetailView.tsx # Detail container + non-disclosure not-found
-│           └── StudentDetailView.module.css # Detail view responsive styles
+│           ├── StudentDetailView.module.css # Detail view & modal responsive styles
+│           ├── AttemptSubmissionForm.tsx # Attempt submission modal with idempotency
+│           └── StudentEditForm.tsx # Student edit modal with 409 conflict UI
 └── types/
     ├── domain.ts                  # Domain entities (StudentSummary, StudentDetail, etc.)
     └── state.ts                   # Discriminated union state definitions
@@ -164,7 +197,8 @@ tests/
 ├── hooks.test.ts                  # Hook race-condition & conflict tests
 └── routes/
     ├── students.test.tsx          # List view integration & debounced race tests
-    └── studentDetail.test.tsx     # Detail view integration & non-disclosure tests
+    ├── studentDetail.test.tsx     # Detail view integration & non-disclosure tests
+    └── forms.test.tsx             # Attempt & edit form integration + conflict tests
 ```
 
 ---
@@ -172,7 +206,7 @@ tests/
 ## Running Verification
 
 ```powershell
-# Run all Vitest test suites (42 tests)
+# Run all Vitest test suites (51 tests)
 npm run test
 
 # Run TypeScript strict typecheck
