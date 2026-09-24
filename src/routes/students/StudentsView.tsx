@@ -88,14 +88,31 @@ export const StudentsView: React.FC = () => {
       {(status === 'success' || status === 'refreshing') && data && (
         <>
           {data.data.length === 0 ? (
-            <EmptyState
-              title="No students found"
-              description="No students match your active search query or status filter."
-              action={{
-                label: 'Reset All Filters',
-                onClick: resetAll
-              }}
-            />
+            (() => {
+              const hasActiveFilters = Boolean(
+                params.query.trim() !== '' ||
+                params.readinessStatus !== undefined ||
+                params.page > 1 ||
+                params.sortBy !== 'name' ||
+                params.sortOrder !== 'asc'
+              );
+
+              return hasActiveFilters ? (
+                <EmptyState
+                  title="No students found"
+                  description="No students match your active search query or status filter."
+                  action={{
+                    label: 'Reset All Filters',
+                    onClick: resetAll
+                  }}
+                />
+              ) : (
+                <EmptyState
+                  title="No students yet"
+                  description="No student readiness records exist for this cohort yet."
+                />
+              );
+            })()
           ) : (
             <>
               <StudentTable

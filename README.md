@@ -170,8 +170,11 @@ In multi-tenant SaaS systems, users or administrators may rapidly switch active 
 
 #### The Fix at the Trust Boundary
 - **Subscriber Event Registry in [`src/api/config.ts`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/api/config.ts)**:
-  - Added `subscribeApiConfig(listener)` so all data hooks are immediately notified when `tenantId` changes.
+  - Added `subscribeApiConfig(listener)` so all data hooks and UI components are immediately notified when `tenantId` changes.
   - Subscriptions clean up automatically on component unmount (`useEffect` return cleanup), completely preventing memory leaks.
+- **Header Tenant Visibility Pill ([`Navbar.tsx`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/components/Navbar.tsx))**:
+  - Subscribes to `subscribeApiConfig` to display the active tenant ID in real-time in the header navigation (`Tenant: tenant-alpha` or `default`).
+  - Provides instant visual verification during live defense demonstrations that data isolation matches the active tenant context.
 - **Request-Instance & Tenant Tagging in Hooks**:
   - Each request captures both a monotonic sequence token (`currentSeq = ++sequenceRef.current`) and the current tenant ID (`currentTenantId = getApiConfig().tenantId`).
   - Response resolution verifies both:
@@ -233,7 +236,7 @@ src/
 ├── styles/
 │   └── tokens.css                 # Light-mode enterprise design tokens
 ├── components/
-│   ├── Navbar.tsx                 # Brand navigation header
+│   ├── Navbar.tsx                 # Brand navigation header with tenant visibility pill
 │   ├── Navbar.module.css          # Navbar responsive styles
 │   ├── EmptyState.tsx             # Reusable zero-state presentation component
 │   └── EmptyState.module.css      # Empty state layout and SVG icon styles
@@ -281,7 +284,7 @@ tests/
 ├── client.test.ts                 # fetchApi client, headers & error tests
 ├── hooks.test.ts                  # Hook race-condition & conflict tests
 └── routes/
-    ├── students.test.tsx          # List view integration & debounced race tests
+    ├── students.test.tsx          # List view integration, debounced race & empty state tests
     ├── studentDetail.test.tsx     # Detail view integration & non-disclosure tests
     ├── forms.test.tsx             # Attempt & edit form integration + conflict tests
     ├── tenantSwitchLeak.test.tsx  # Cross-tenant data leak reproduction & isolation tests
@@ -293,7 +296,7 @@ tests/
 ## Running Verification
 
 ```powershell
-# Run all Vitest test suites (57 tests)
+# Run all Vitest test suites (59 tests)
 npm run test
 
 # Run TypeScript strict typecheck

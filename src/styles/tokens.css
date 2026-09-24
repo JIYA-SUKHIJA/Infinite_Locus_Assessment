@@ -1,32 +1,37 @@
-/* Design Tokens: Light Mode Enterprise System */
+/* Design Tokens: Clean Light Mode Enterprise System */
 :root {
-  /* Brand & Palette Gradient: #F0EAFC -> #E1E0F7 -> #CFE7F9 -> #C2E5FB -> #A9DFF5 -> #7FD3F0 -> #61CEF2 */
-  --color-bg: #FAF8FE;
-  --color-bg-subtle: #F0EAFC;
+  /* Neutral Background & Surface */
+  --color-bg: #FAFAFB;
+  --color-bg-subtle: #F3F4F6;
   --color-surface: #FFFFFF;
-  --color-surface-hover: #F8FAFC;
+  --color-surface-hover: #F9FAFB;
 
-  /* Header Tokens */
-  --color-header-bg: #0F2C42;
-  --color-header-text: #FFFFFF;
-  --color-header-subtext: #C2E5FB;
-  --color-header-border: #61CEF2;
+  /* Header Tokens (Light Surface with Crisp Contrast) */
+  --color-header-bg: #FFFFFF;
+  --color-header-text: #0F172A;
+  --color-header-subtext: #64748B;
+  --color-header-border: #E5E7EB;
+  --color-header-accent-line: #5850EC;
 
-  /* Accent & Interactive Tokens */
-  --color-accent: #61CEF2;
-  --color-accent-hover: #7FD3F0;
-  --color-accent-subtle: #CFE7F9;
-  --color-accent-dark: #0284C7;
-  --color-accent-text: #0A2335;
+  /* Multi-Accent System (Soft yet Saturated) */
+  --color-accent-primary: #5850EC;       /* Indigo/Violet: Primary actions, links, active pills */
+  --color-accent-primary-hover: #4F46E5; /* Darker indigo for hover states */
+  --color-accent-primary-light: #EEF2FF; /* Tinted background for active states */
+  
+  --color-accent-teal: #0D9488;          /* Teal: Secondary highlights & stats */
+  --color-accent-teal-light: #F0FDFA;    /* Teal subtle tint */
+
+  --color-accent-orange: #EA580C;        /* Orange: Tertiary attention/alert highlight */
+  --color-accent-orange-light: #FFF7ED;  /* Orange subtle tint */
 
   /* Neutral Text & Borders */
   --color-text-primary: #0F172A;
   --color-text-secondary: #475569;
   --color-text-muted: #64748B;
-  --color-border: #E2E8F0;
-  --color-border-subtle: #F1F5F9;
+  --color-border: #E5E7EB;
+  --color-border-subtle: #F3F4F6;
 
-  /* WCAG AA Verified Status Badge Colors */
+  /* WCAG AA Verified Status Badge Colors (Preserved) */
   --badge-ready-bg: #DCFCE7;
   --badge-ready-text: #14532D;
   --badge-nearly-ready-bg: #E0F2FE;
@@ -45,13 +50,13 @@
   --radius-lg: 0.625rem;
   --radius-full: 9999px;
 
-  /* Micro Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 44, 66, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(15, 44, 66, 0.07), 0 2px 4px -2px rgba(15, 44, 66, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 44, 66, 0.08), 0 4px 6px -4px rgba(15, 44, 66, 0.03);
+  /* Soft Micro Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
 
-  /* Focus Ring */
-  --focus-ring: 0 0 0 3px rgba(97, 206, 242, 0.45);
+  /* Accessible Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(88, 80, 236, 0.35);
 }
 
 /* Global Reset & Body Base */

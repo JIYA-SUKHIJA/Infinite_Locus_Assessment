@@ -16,12 +16,12 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background: var(--color-bg-subtle);
+  background: var(--color-accent-primary-light);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-  color: var(--color-accent-dark);
+  color: var(--color-accent-primary);
 }
 
 .iconSvg {
@@ -45,9 +45,9 @@
 }
 
 .actionButton {
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
-  border: 1px solid var(--color-header-bg);
+  border: 1px solid var(--color-accent-primary);
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
@@ -57,8 +57,8 @@
 }
 
 .actionButton:hover {
-  background: #1A3E5C;
-  border-color: #1A3E5C;
+  background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
 }
 
 .actionButton:focus-visible {

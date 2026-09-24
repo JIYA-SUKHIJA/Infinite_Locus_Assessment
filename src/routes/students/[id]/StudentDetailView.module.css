@@ -17,7 +17,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  color: var(--color-accent-dark);
+  color: var(--color-accent-primary);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -25,7 +25,7 @@
 }
 
 .backLink:hover {
-  color: #0369a1;
+  color: var(--color-accent-primary-hover);
   text-decoration: underline;
 }
 
@@ -96,8 +96,8 @@
 }
 
 .scoreBadgeContainer {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background: var(--color-accent-teal-light);
+  border: 1px solid #99F6E4;
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   text-align: right;
@@ -106,7 +106,7 @@
 .scoreLabel {
   display: block;
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: var(--color-accent-teal);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -115,12 +115,12 @@
 .scoreValue {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-accent-teal);
 }
 
 /* Edit Student Button */
 .editStudentBtn {
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
   border: none;
   padding: 0.5rem 1rem;
@@ -129,10 +129,11 @@
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .editStudentBtn:hover {
-  background: #1A3E5C;
+  background: var(--color-accent-primary-hover);
 }
 
 .editStudentBtn:focus-visible {
@@ -226,7 +227,7 @@
 
 /* Evidence Box */
 .evidenceBox {
-  background: #f8fafc;
+  background: #F9FAFB;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 0.875rem;
@@ -286,9 +287,9 @@
 }
 
 .submitAttemptBtn:hover {
-  background: var(--color-bg-subtle);
-  border-color: var(--color-accent-hover);
-  color: var(--color-text-primary);
+  background: var(--color-accent-primary-light);
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
 }
 
 .submitAttemptBtn:focus-visible {
@@ -311,7 +312,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border: 3px solid var(--color-border);
-  border-top-color: var(--color-accent-dark);
+  border-top-color: var(--color-accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 1rem;
@@ -338,7 +339,7 @@
 
 .actionBtn {
   display: inline-block;
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
   text-decoration: none;
   padding: 0.5rem 1.25rem;
@@ -351,7 +352,7 @@
 }
 
 .actionBtn:hover {
-  background: #1A3E5C;
+  background: var(--color-accent-primary-hover);
 }
 
 .actionBtn:focus-visible {
@@ -405,7 +406,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(15, 44, 66, 0.6);
+  background-color: rgba(15, 23, 42, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,12 +491,12 @@
 }
 
 .formInput:focus {
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-primary);
   box-shadow: var(--focus-ring);
 }
 
 .formInput:disabled {
-  background-color: #f8fafc;
+  background-color: #F9FAFB;
   color: var(--color-text-muted);
   cursor: not-allowed;
 }
@@ -531,7 +532,7 @@
 .checkboxInput {
   width: 1rem;
   height: 1rem;
-  accent-color: var(--color-accent-dark);
+  accent-color: var(--color-accent-primary);
   cursor: pointer;
 }
 
@@ -563,8 +564,8 @@
 }
 
 .submitBtn {
-  background: var(--color-header-bg);
-  border: 1px solid var(--color-header-bg);
+  background: var(--color-accent-primary);
+  border: 1px solid var(--color-accent-primary);
   color: #ffffff;
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-md);
@@ -572,11 +573,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .submitBtn:hover {
-  background: #1A3E5C;
-  border-color: #1A3E5C;
+  background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
 }
 
 .submitBtn:focus-visible {
@@ -614,9 +616,9 @@
 }
 
 .conflictAlert {
-  background: #fff7ed;
-  border: 1px solid #fdba74;
-  color: #9a3412;
+  background: var(--color-accent-orange-light);
+  border: 1px solid #FDBA74;
+  color: #9A3412;
   padding: 1rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
@@ -626,7 +628,7 @@
   font-weight: 700;
   font-size: 0.9375rem;
   margin: 0 0 0.375rem;
-  color: #9a3412;
+  color: #9A3412;
 }
 
 .conflictAlertMessage {
@@ -641,7 +643,7 @@
 }
 
 .conflictReloadBtn {
-  background: #ea580c;
+  background: var(--color-accent-orange);
   color: #ffffff;
   border: none;
   padding: 0.4rem 0.85rem;
@@ -653,13 +655,13 @@
 }
 
 .conflictReloadBtn:hover {
-  background: #c2410c;
+  background: #C2410C;
 }
 
 .conflictDiscardBtn {
   background: var(--color-surface);
-  border: 1px solid #fdba74;
-  color: #9a3412;
+  border: 1px solid #FDBA74;
+  color: #9A3412;
   padding: 0.4rem 0.85rem;
   border-radius: var(--radius-md);
   font-size: 0.8125rem;
@@ -669,7 +671,7 @@
 }
 
 .conflictDiscardBtn:hover {
-  background: #fff7ed;
+  background: #FFF7ED;
 }
 
 /* Activity & Audit Log Section */
@@ -705,7 +707,7 @@
 
 .refreshActivityBtn:hover {
   background: var(--color-bg-subtle);
-  border-color: var(--color-accent-hover);
+  border-color: #CBD5E1;
   color: var(--color-text-primary);
 }
 
@@ -730,7 +732,7 @@
   width: 1.5rem;
   height: 1.5rem;
   border: 2px solid var(--color-border);
-  border-top-color: var(--color-accent-dark);
+  border-top-color: var(--color-accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 0.5rem;
@@ -800,9 +802,9 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--color-accent-primary);
   border: 2px solid var(--color-surface);
-  box-shadow: 0 0 0 2px var(--color-accent-subtle);
+  box-shadow: 0 0 0 2px var(--color-accent-primary-light);
   flex-shrink: 0;
   margin-top: 0.25rem;
   z-index: 1;
@@ -810,7 +812,7 @@
 
 .timelineContent {
   flex-grow: 1;
-  background: #f8fafc;
+  background: #F9FAFB;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
@@ -830,8 +832,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background: var(--color-bg-subtle);
-  color: var(--color-text-secondary);
+  background: var(--color-accent-primary-light);
+  color: var(--color-accent-primary);
   padding: 0.15rem 0.45rem;
   border-radius: var(--radius-sm);
 }
@@ -913,7 +915,7 @@
 
 .miniPageBtn:hover:not(:disabled) {
   background: var(--color-bg-subtle);
-  border-color: var(--color-accent-hover);
+  border-color: #CBD5E1;
   color: var(--color-text-primary);
 }
 

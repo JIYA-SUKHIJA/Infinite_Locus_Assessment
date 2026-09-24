@@ -29,18 +29,20 @@
 }
 
 .cohortStatBadge {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-accent-teal-light);
+  border: 1px solid #99F6E4;
   padding: 0.5rem 0.875rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: var(--color-accent-teal);
   box-shadow: var(--shadow-sm);
+  font-weight: 500;
 }
 
 .cohortStatBadge strong {
-  color: var(--color-accent-dark);
+  color: var(--color-accent-teal);
   font-size: 1rem;
+  font-weight: 700;
 }
 
 .controlsBar {
@@ -79,7 +81,7 @@
 }
 
 .searchInput:focus {
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-primary);
   box-shadow: var(--focus-ring);
 }
 
@@ -130,7 +132,7 @@
 .filterChip:hover {
   background: var(--color-bg-subtle);
   color: var(--color-text-primary);
-  border-color: var(--color-accent-hover);
+  border-color: #CBD5E1;
 }
 
 .filterChip:focus-visible {
@@ -139,13 +141,15 @@
 }
 
 .filterChipActive {
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
-  border-color: var(--color-header-bg);
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .filterChipActive:hover {
-  background: #1A3E5C;
+  background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
   color: #ffffff;
 }
 
@@ -227,7 +231,7 @@
 }
 
 .desktopTable th {
-  background: #f8fafc;
+  background: #F9FAFB;
   padding: 0.75rem 1rem;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -249,7 +253,7 @@
 }
 
 .tableRow:hover {
-  background: #f8fafc;
+  background: #F9FAFB;
 }
 
 .sortableTh {
@@ -279,7 +283,7 @@
 }
 
 .sortHeaderBtn:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
 }
 
@@ -299,7 +303,7 @@
 }
 
 .studentLink:hover .studentName {
-  color: var(--color-accent-dark);
+  color: var(--color-accent-primary);
   text-decoration: underline;
 }
 
@@ -437,7 +441,7 @@
 
 .pageBtn:hover:not(:disabled) {
   background: var(--color-bg-subtle);
-  border-color: var(--color-accent-hover);
+  border-color: #CBD5E1;
   color: var(--color-text-primary);
 }
 
@@ -452,7 +456,7 @@
 }
 
 .currentPageIndicator {
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
   width: 2rem;
   height: 2rem;
@@ -478,7 +482,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border: 3px solid var(--color-border);
-  border-top-color: var(--color-accent-dark);
+  border-top-color: var(--color-accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 1rem;
@@ -502,7 +506,7 @@
 }
 
 .actionBtn {
-  background: var(--color-header-bg);
+  background: var(--color-accent-primary);
   color: #ffffff;
   border: none;
   padding: 0.5rem 1.25rem;
@@ -510,11 +514,11 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .actionBtn:hover {
-  background: #1A3E5C;
+  background: var(--color-accent-primary-hover);
 }
 
 .actionBtn:focus-visible {

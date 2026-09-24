@@ -4,6 +4,7 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { http, HttpResponse, delay } from 'msw';
 import { server } from '../setup';
 import { StudentsView } from '../../src/routes/students/StudentsView';
+import { Navbar } from '../../src/components/Navbar';
 import { setApiConfig } from '../../src/api/config';
 import { mockStudentSummary } from '../mocks/handlers';
 
@@ -293,7 +294,7 @@ describe('StudentsView Integration Tests', () => {
     expect(screen.queryByText('Updating student list...')).toBeNull();
   });
 
-  it('EMPTY STATE: shows empty state when zero results match filter, distinct from error', async () => {
+  it('EMPTY STATE (with filters active): shows filtered empty copy and reset action button', async () => {
     server.use(
       http.get('https://api.test.example.com/api/students', () => {
         return HttpResponse.json({
@@ -311,13 +312,43 @@ describe('StudentsView Integration Tests', () => {
       })
     );
 
-    renderStudentsRoute();
+    renderStudentsRoute(['/students?q=NonExistent']);
 
     await waitFor(() => {
       expect(screen.getByText('No students found')).toBeDefined();
     });
 
+    expect(screen.getByText('No students match your active search query or status filter.')).toBeDefined();
     expect(screen.getByText('Reset All Filters')).toBeDefined();
+    expect(screen.queryByText('Failed to load student data')).toBeNull();
+  });
+
+  it('EMPTY STATE (unfiltered / empty cohort): shows empty cohort copy without reset action button', async () => {
+    server.use(
+      http.get('https://api.test.example.com/api/students', () => {
+        return HttpResponse.json({
+          data: [],
+          pagination: {
+            page: 1,
+            pageSize: 20,
+            totalItems: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false
+          },
+          cohortAverageScore: 0
+        });
+      })
+    );
+
+    renderStudentsRoute(['/students']);
+
+    await waitFor(() => {
+      expect(screen.getByText('No students yet')).toBeDefined();
+    });
+
+    expect(screen.getByText('No student readiness records exist for this cohort yet.')).toBeDefined();
+    expect(screen.queryByText('Reset All Filters')).toBeNull();
     expect(screen.queryByText('Failed to load student data')).toBeNull();
   });
 
@@ -423,5 +454,26 @@ describe('StudentsView Integration Tests', () => {
       expect(lastSortBy).toBe('summaryScore');
       expect(lastSortOrder).toBe('desc');
     });
+  });
+
+  it('NAVBAR TENANT VISIBILITY: displays active tenant from config and updates on tenant switch', async () => {
+    setApiConfig({ tenantId: 'tenant-alpha' });
+    const { unmount } = render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    );
+
+    const badge = screen.getByTestId('navbar-tenant-badge');
+    expect(badge.textContent).toContain('Tenant:');
+    expect(badge.textContent).toContain('tenant-alpha');
+
+    // Dynamic switch
+    act(() => {
+      setApiConfig({ tenantId: 'tenant-beta' });
+    });
+
+    expect(badge.textContent).toContain('tenant-beta');
+    unmount();
   });
 });

@@ -58,8 +58,11 @@ const handleGetStudents = ({ request }: { request: Request }) => {
   const url = new URL(request.url);
   const query = url.searchParams.get('q');
   const status = url.searchParams.get('status');
+  const isDemoEmptyCohort =
+    url.searchParams.get('cohort') === 'empty' ||
+    request.headers.get('x-tenant-id') === 'empty-tenant';
 
-  let items = [mockStudentSummary];
+  let items = isDemoEmptyCohort ? [] : [mockStudentSummary];
   if (query && !mockStudentSummary.name.toLowerCase().includes(query.toLowerCase())) {
     items = [];
   }
