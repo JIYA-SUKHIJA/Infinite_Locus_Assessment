@@ -1,0 +1,70 @@
+/* Design Tokens: Light Mode Enterprise System */
+:root {
+  /* Brand & Palette Gradient: #F0EAFC -> #E1E0F7 -> #CFE7F9 -> #C2E5FB -> #A9DFF5 -> #7FD3F0 -> #61CEF2 */
+  --color-bg: #FAF8FE;
+  --color-bg-subtle: #F0EAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F8FAFC;
+
+  /* Header Tokens */
+  --color-header-bg: #0F2C42;
+  --color-header-text: #FFFFFF;
+  --color-header-subtext: #C2E5FB;
+  --color-header-border: #61CEF2;
+
+  /* Accent & Interactive Tokens */
+  --color-accent: #61CEF2;
+  --color-accent-hover: #7FD3F0;
+  --color-accent-subtle: #CFE7F9;
+  --color-accent-dark: #0284C7;
+  --color-accent-text: #0A2335;
+
+  /* Neutral Text & Borders */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-border: #E2E8F0;
+  --color-border-subtle: #F1F5F9;
+
+  /* WCAG AA Verified Status Badge Colors */
+  --badge-ready-bg: #DCFCE7;
+  --badge-ready-text: #14532D;
+  --badge-nearly-ready-bg: #E0F2FE;
+  --badge-nearly-ready-text: #0369A1;
+  --badge-developing-bg: #FEF3C7;
+  --badge-developing-text: #92400E;
+  --badge-needs-prep-bg: #FEE2E2;
+  --badge-needs-prep-text: #991B1B;
+  --badge-incomplete-bg: #F1F5F9;
+  --badge-incomplete-text: #475569;
+
+  /* Typography & Sizing */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.625rem;
+  --radius-full: 9999px;
+
+  /* Micro Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 44, 66, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 44, 66, 0.07), 0 2px 4px -2px rgba(15, 44, 66, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 44, 66, 0.08), 0 4px 6px -4px rgba(15, 44, 66, 0.03);
+
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(97, 206, 242, 0.45);
+}
+
+/* Global Reset & Body Base */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useStudentActivity } from '../../../api/hooks/useStudentActivity';
 import { ActivityEvent } from '../../../types/domain';
 import { StatusBadge } from '../StatusBadge';
+import { EmptyState } from '../../../components/EmptyState';
 import styles from './StudentDetailView.module.css';
 
 export interface ActivityLogProps {
@@ -183,9 +184,10 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ studentId }) => {
           )}
 
           {data.data.length === 0 ? (
-            <div className={styles.activityEmptyBox}>
-              <p>No audit activity recorded for this student yet.</p>
-            </div>
+            <EmptyState
+              title="No activity recorded"
+              description="No audit activity recorded for this student yet."
+            />
           ) : (
             <ul className={styles.timelineList} aria-label="Student activity history">
               {data.data.map((event) => (

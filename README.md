@@ -208,11 +208,38 @@ In multi-tenant SaaS systems, users or administrators may rapidly switch active 
 
 ---
 
+## Local Development with Mocks
+
+MSW Service Worker browser mocking is available for interactive local frontend development without requiring a live backend server:
+
+1. **Enable Mocking in `.env.development.local`**:
+   ```env
+   VITE_USE_MOCKS=true
+   ```
+2. **Start Vite Dev Server**:
+   ```powershell
+   npm run dev
+   ```
+3. Open `http://localhost:5173/students` in your browser. MSW intercepts all `/api/*` endpoints asynchronously in development mode before React mounts.
+
+---
+
 ## Directory Structure
 
 ```
 src/
-├── App.tsx                        # Router configuration (/students and /students/:id)
+├── App.tsx                        # Router configuration & Navbar integration
+├── main.tsx                       # Async gated MSW browser worker bootstrap
+├── styles/
+│   └── tokens.css                 # Light-mode enterprise design tokens
+├── components/
+│   ├── Navbar.tsx                 # Brand navigation header
+│   ├── Navbar.module.css          # Navbar responsive styles
+│   ├── EmptyState.tsx             # Reusable zero-state presentation component
+│   └── EmptyState.module.css      # Empty state layout and SVG icon styles
+├── mocks/
+│   ├── handlers.ts                # Shared MSW v2 mock handlers (single source of truth)
+│   └── browser.ts                 # Dev browser ServiceWorker setup
 ├── api/
 │   ├── client.ts                  # Typed fetchApi client & ApiError / ApiValidationError
 │   ├── config.ts                  # Tenant context store with subscription event registry
@@ -248,8 +275,8 @@ src/
     └── state.ts                   # Discriminated union state definitions
 tests/
 ├── mocks/
-│   └── handlers.ts                # MSW v2 mock handlers
-├── setup.ts                       # MSW lifecycle and test configuration
+│   └── handlers.ts                # Re-exports shared handlers from src/mocks/handlers.ts
+├── setup.ts                       # MSW lifecycle and test configuration (Node server)
 ├── schemas.test.ts                # Zod runtime validation & fail-closed tests
 ├── client.test.ts                 # fetchApi client, headers & error tests
 ├── hooks.test.ts                  # Hook race-condition & conflict tests

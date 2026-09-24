@@ -5,6 +5,7 @@ import { SearchInput } from './SearchInput';
 import { StatusFilter } from './StatusFilter';
 import { StudentTable } from './StudentTable';
 import { Pagination } from './Pagination';
+import { EmptyState } from '../../components/EmptyState';
 import styles from './StudentsView.module.css';
 
 export const StudentsView: React.FC = () => {
@@ -87,19 +88,14 @@ export const StudentsView: React.FC = () => {
       {(status === 'success' || status === 'refreshing') && data && (
         <>
           {data.data.length === 0 ? (
-            <div className={styles.stateContainer}>
-              <h2 className={styles.stateTitle}>No students found</h2>
-              <p className={styles.stateDescription}>
-                No students match your active search query or status filter.
-              </p>
-              <button
-                type="button"
-                onClick={resetAll}
-                className={styles.actionBtn}
-              >
-                Reset All Filters
-              </button>
-            </div>
+            <EmptyState
+              title="No students found"
+              description="No students match your active search query or status filter."
+              action={{
+                label: 'Reset All Filters',
+                onClick: resetAll
+              }}
+            />
           ) : (
             <>
               <StudentTable

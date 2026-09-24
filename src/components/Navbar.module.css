@@ -1,0 +1,89 @@
+.navbar {
+  background-color: var(--color-header-bg);
+  color: var(--color-header-text);
+  border-bottom: 3px solid var(--color-header-border);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--color-header-text);
+}
+
+.brandIcon {
+  width: 2rem;
+  height: 2rem;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-subtle));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-text);
+  font-weight: 800;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.brandTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-header-text);
+  margin: 0;
+}
+
+.brandSubtitle {
+  font-size: 0.75rem;
+  color: var(--color-header-subtext);
+  margin: 0;
+  font-weight: 400;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.navLink {
+  color: var(--color-header-subtext);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.navLink:hover {
+  color: var(--color-header-text);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.navLinkActive {
+  color: var(--color-header-text);
+  background: rgba(97, 206, 242, 0.15);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+@media (max-width: 640px) {
+  .brandSubtitle {
+    display: none;
+  }
+}
