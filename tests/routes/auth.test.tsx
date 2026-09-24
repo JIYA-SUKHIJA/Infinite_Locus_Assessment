@@ -194,10 +194,11 @@ describe('Auth & Session Flow Integration Tests', () => {
         fireEvent.click(signOutBtn);
       });
 
-      // Session cleared
+      // Session cleared (tenantId and authToken cleared, baseUrl preserved)
       const config = getApiConfig();
       expect(config.tenantId).toBeNull();
       expect(config.authToken).toBeNull();
+      expect(config.baseUrl).toBe('https://api.test.example.com');
 
       // Navigates to /login and hides badge
       await waitFor(() => {
@@ -271,6 +272,7 @@ describe('Auth & Session Flow Integration Tests', () => {
       });
       expect(screen.queryByTestId('navbar-tenant-badge')).toBeNull();
       expect(getApiConfig().authToken).toBeNull();
+      expect(getApiConfig().baseUrl).toBe('https://api.test.example.com');
     });
   });
 
