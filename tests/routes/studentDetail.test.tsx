@@ -42,8 +42,7 @@ describe('StudentDetailView Integration Tests', () => {
   beforeEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-detail-test',
-      authToken: 'mock-auth-token'
+      tenantId: 'tenant-detail-test'
     });
   });
 

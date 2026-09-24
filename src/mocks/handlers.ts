@@ -54,25 +54,7 @@ export const mockActivityEvent = {
   timestamp: '2026-09-18T14:30:00.000Z'
 };
 
-const requireAuth = (request: Request): Response | null => {
-  const authHeader = request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ') || !authHeader.replace('Bearer ', '').trim()) {
-    return HttpResponse.json(
-      {
-        code: 'UNAUTHORIZED',
-        message: 'Authentication token is missing or invalid',
-        requestId: `req_unauth_${Date.now()}`
-      },
-      { status: 401 }
-    );
-  }
-  return null;
-};
-
 const handleGetStudents = ({ request }: { request: Request }) => {
-  const authError = requireAuth(request);
-  if (authError) return authError;
-
   const url = new URL(request.url);
   const query = url.searchParams.get('q');
   const status = url.searchParams.get('status');
@@ -102,10 +84,7 @@ const handleGetStudents = ({ request }: { request: Request }) => {
   });
 };
 
-const handleGetActivity = ({ request, params }: { request: Request; params: Record<string, string | readonly string[] | undefined> }) => {
-  const authError = requireAuth(request);
-  if (authError) return authError;
-
+const handleGetActivity = ({ params }: { params: Record<string, string | readonly string[] | undefined> }) => {
   return HttpResponse.json({
     data: [
       {
@@ -124,10 +103,7 @@ const handleGetActivity = ({ request, params }: { request: Request; params: Reco
   });
 };
 
-const handleGetStudentDetail = ({ request, params }: { request: Request; params: Record<string, string | readonly string[] | undefined> }) => {
-  const authError = requireAuth(request);
-  if (authError) return authError;
-
+const handleGetStudentDetail = ({ params }: { params: Record<string, string | readonly string[] | undefined> }) => {
   const { id } = params;
   if (id === 'not-found') {
     return HttpResponse.json(
@@ -149,9 +125,6 @@ const handleGetStudentDetail = ({ request, params }: { request: Request; params:
 };
 
 const handlePostAttempt = async ({ params, request }: { params: Record<string, string | readonly string[] | undefined>; request: Request }) => {
-  const authError = requireAuth(request);
-  if (authError) return authError;
-
   const body = (await request.json()) as any;
   return HttpResponse.json(
     {
@@ -175,9 +148,6 @@ const handlePostAttempt = async ({ params, request }: { params: Record<string, s
 };
 
 const handlePatchStudent = async ({ request, params }: { request: Request; params: Record<string, string | readonly string[] | undefined> }) => {
-  const authError = requireAuth(request);
-  if (authError) return authError;
-
   const ifMatch = request.headers.get('If-Match');
   const expectedVersion = ifMatch ? parseInt(ifMatch.replace(/"/g, ''), 10) : undefined;
 

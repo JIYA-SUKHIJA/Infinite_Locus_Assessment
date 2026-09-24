@@ -23,8 +23,7 @@ describe('Forms Integration Tests (Attempt Submission & Student Edit)', () => {
   beforeEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-forms-test',
-      authToken: 'mock-auth-token'
+      tenantId: 'tenant-forms-test'
     });
   });
 

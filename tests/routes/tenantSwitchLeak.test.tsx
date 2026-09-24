@@ -10,16 +10,14 @@ describe('Cross-Tenant Data Leak & Concurrency Tests', () => {
   beforeEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-A',
-      authToken: 'mock-auth-token'
+      tenantId: 'tenant-A'
     });
   });
 
   afterEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-test',
-      authToken: 'mock-auth-token'
+      tenantId: 'tenant-test'
     });
   });
 
