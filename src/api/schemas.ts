@@ -199,31 +199,3 @@ export const StudentActivityResponseSchema = z
   .strict();
 
 export type StudentActivityResponse = z.infer<typeof StudentActivityResponseSchema>;
-
-/**
- * Auth User Schema
- */
-export const AuthUserSchema = z
-  .object({
-    id: z.string().min(1),
-    email: z.string().email(),
-    name: z.string().min(1),
-    tenantId: z.string().min(1),
-    role: z.enum(['admin', 'evaluator', 'viewer'])
-  })
-  .strict();
-
-export type AuthUser = z.infer<typeof AuthUserSchema>;
-
-/**
- * POST /api/auth/login and POST /api/auth/register Response Schema
- */
-export const AuthResponseSchema = z
-  .object({
-    token: z.string().min(1),
-    user: AuthUserSchema
-  })
-  .strict();
-
-export type AuthResponse = z.infer<typeof AuthResponseSchema>;
-

@@ -1,83 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { SEEDED_USERS } from '../../mocks/seedIdentities';
-import { fetchApi, toApiError } from '../../api/client';
-import { AuthResponseSchema } from '../../api/schemas';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { SEEDED_IDENTITIES, SeedIdentity } from '../../mocks/seedIdentities';
 import { setApiConfig } from '../../api/config';
 import styles from './LoginPage.module.css';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const emailInputRef = useRef<HTMLInputElement>(null);
+  const [selectedTenantId, setSelectedTenantId] = useState<string>('');
+  const selectRef = useRef<HTMLSelectElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    emailInputRef.current?.focus();
+    selectRef.current?.focus();
   }, []);
 
-  const handleUsePreset = (presetEmail: string, presetPassword = 'password123') => {
-    setEmail(presetEmail);
-    setPassword(presetPassword);
-    setFieldErrors({});
-    setServerError(null);
-  };
-
-  const validate = (): boolean => {
-    const errors: Record<string, string> = {};
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim()) {
-      errors.email = 'Email address is required';
-    } else if (!emailRegex.test(email.trim())) {
-      errors.email = 'Please enter a valid email address';
-    }
-
-    if (!password) {
-      errors.password = 'Password is required';
-    }
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setServerError(null);
+    if (!selectedTenantId) return;
 
-    if (!validate()) {
-      return;
-    }
+    const identity = SEEDED_IDENTITIES.find((id) => id.tenantId === selectedTenantId);
+    if (!identity) return;
 
-    setIsSubmitting(true);
-    try {
-      const response = await fetchApi(AuthResponseSchema, '/api/auth/login', {
-        method: 'POST',
-        body: {
-          email: email.trim().toLowerCase(),
-          password
-        }
-      });
+    setApiConfig({
+      tenantId: identity.tenantId,
+      authToken: identity.authToken
+    });
 
-      setApiConfig({
-        tenantId: response.user.tenantId,
-        authToken: response.token,
-        user: response.user
-      });
-
-      const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/students';
-      navigate(from, { replace: true });
-    } catch (err) {
-      const apiErr = toApiError(err);
-      setServerError(apiErr.message);
-    } finally {
-      setIsSubmitting(false);
-    }
+    const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/students';
+    navigate(from, { replace: true });
   };
 
   return (
@@ -88,84 +38,43 @@ export const LoginPage: React.FC = () => {
             SR
           </div>
           <h1 className={styles.title}>Sign In</h1>
-          <p className={styles.subtitle}>Enter your credentials to access the Control Center</p>
+          <p className={styles.subtitle}>Select a seeded identity to access the Control Center</p>
         </div>
 
-        {/* Quick Demo Preset Chips for Evaluation */}
-        <section className={styles.demoPresets} aria-label="Demo evaluator presets">
-          <p className={styles.demoPresetsTitle}>Evaluation Quick-Fill:</p>
-          <div className={styles.presetChips}>
-            {SEEDED_USERS.map((user) => (
-              <button
-                key={user.id}
-                type="button"
-                onClick={() => handleUsePreset(user.email, user.password || 'password123')}
-                className={styles.presetChip}
-              >
-                <span>Use Demo: <strong>{user.email}</strong></span>
-                <span className={styles.presetRole}>{user.role.toUpperCase()}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {serverError && (
-          <div className={styles.errorBanner} role="alert">
-            {serverError}
-          </div>
-        )}
+        <aside className={styles.noticeBanner} role="note">
+          <strong>Demo Mode:</strong> Select a seeded persona to simulate authenticated multi-tenant session context.
+        </aside>
 
         <form onSubmit={handleSubmit} className={styles.form} noValidate>
           <div className={styles.fieldGroup}>
-            <label htmlFor="login-email" className={styles.label}>
-              Email Address
+            <label htmlFor="identity-select" className={styles.label}>
+              Select Persona &amp; Tenant
             </label>
-            <input
-              id="login-email"
-              ref={emailInputRef}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. evaluator@blue.org"
-              className={styles.input}
-              autoComplete="email"
-              required
-            />
-            {fieldErrors.email && <p className={styles.fieldError}>{fieldErrors.email}</p>}
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <label htmlFor="login-password" className={styles.label}>
-              Password
-            </label>
-            <input
-              id="login-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className={styles.input}
-              autoComplete="current-password"
-              required
-            />
-            {fieldErrors.password && <p className={styles.fieldError}>{fieldErrors.password}</p>}
+            <select
+              id="identity-select"
+              ref={selectRef}
+              value={selectedTenantId}
+              onChange={(e) => setSelectedTenantId(e.target.value)}
+              className={styles.select}
+              aria-required="true"
+            >
+              <option value="">-- Choose an identity --</option>
+              {SEEDED_IDENTITIES.map((identity: SeedIdentity) => (
+                <option key={identity.tenantId} value={identity.tenantId}>
+                  {identity.tenantLabel} &mdash; {identity.userLabel}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={!selectedTenantId}
             className={styles.submitBtn}
           >
-            {isSubmitting ? 'Signing In...' : 'Sign In'}
+            Sign In
           </button>
         </form>
-
-        <footer className={styles.footer}>
-          <span>Don&apos;t have an account?</span>
-          <Link to="/register" className={styles.link}>
-            Register
-          </Link>
-        </footer>
       </div>
     </main>
   );
