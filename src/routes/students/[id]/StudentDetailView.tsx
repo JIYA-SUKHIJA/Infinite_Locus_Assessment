@@ -4,6 +4,7 @@ import { useStudentDetail } from '../../../api/hooks/useStudentDetail';
 import { StatusBadge } from '../StatusBadge';
 import { CompetencyList } from './CompetencyList';
 import { AttemptSubmissionForm } from './AttemptSubmissionForm';
+import { StudentEditForm } from './StudentEditForm';
 import styles from './StudentDetailView.module.css';
 
 export interface StudentDetailViewProps {
@@ -27,6 +28,7 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
     name: string;
     code: string;
   } | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState<boolean>(false);
 
   // Safe fallback: Return to list with prior query parameters if available, else root /students
   const backTarget =
@@ -130,12 +132,13 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
                 </span>
               </div>
 
-              {/* Phase 4 Entry Point Stub: version is threaded directly */}
+              {/* Edit Student Button */}
               <button
                 type="button"
                 className={styles.editStudentBtn}
                 data-version={data.data.version}
                 onClick={() => {
+                  setIsEditOpen(true);
                   onEditStudent?.(data.data.id, data.data.version);
                 }}
                 aria-label={`Edit profile for ${data.data.name}`}
@@ -170,6 +173,15 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
             studentId={data.data.id}
             competency={attemptTargetCompetency}
             onSuccess={() => void refetch()}
+          />
+
+          {/* Student Edit Modal */}
+          <StudentEditForm
+            isOpen={isEditOpen}
+            onClose={() => setIsEditOpen(false)}
+            student={data.data}
+            onSuccess={() => void refetch()}
+            onRefreshLatest={() => void refetch()}
           />
         </div>
       )}
