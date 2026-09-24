@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { getApiConfig, subscribeApiConfig } from '../api/config';
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../api/hooks/useAuth';
+import { setApiConfig } from '../api/config';
 import styles from './Navbar.module.css';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, tenantId } = useAuth();
   const isStudentsActive = location.pathname.startsWith('/students');
-  const [tenantId, setTenantId] = useState<string | null>(() => getApiConfig().tenantId);
 
-  useEffect(() => {
-    return subscribeApiConfig((config) => {
-      setTenantId(config.tenantId);
-    });
-  }, []);
+  const handleSignOut = () => {
+    setApiConfig({ tenantId: null, authToken: null });
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className={styles.navbar} role="banner">
@@ -27,21 +28,32 @@ export const Navbar: React.FC = () => {
           </div>
         </Link>
 
-        <div className={styles.navRight}>
-          <div className={styles.tenantBadge} data-testid="navbar-tenant-badge">
-            <span className={styles.tenantLabel}>Tenant:</span>
-            <span className={styles.tenantValue}>{tenantId || 'default'}</span>
-          </div>
+        {isAuthenticated && (
+          <div className={styles.navRight}>
+            <div className={styles.tenantBadge} data-testid="navbar-tenant-badge">
+              <span className={styles.tenantLabel}>Tenant:</span>
+              <span className={styles.tenantValue}>{tenantId || 'default'}</span>
+            </div>
 
-          <nav className={styles.navLinks} aria-label="Primary navigation">
-            <Link
-              to="/students"
-              className={`${styles.navLink} ${isStudentsActive ? styles.navLinkActive : ''}`}
+            <nav className={styles.navLinks} aria-label="Primary navigation">
+              <Link
+                to="/students"
+                className={`${styles.navLink} ${isStudentsActive ? styles.navLinkActive : ''}`}
+              >
+                Students
+              </Link>
+            </nav>
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className={styles.signOutBtn}
+              data-testid="navbar-sign-out-btn"
             >
-              Students
-            </Link>
-          </nav>
-        </div>
+              Sign Out
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
