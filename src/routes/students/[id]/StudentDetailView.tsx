@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useStudentDetail } from '../../../api/hooks/useStudentDetail';
 import { StatusBadge } from '../StatusBadge';
 import { CompetencyList } from './CompetencyList';
+import { AttemptSubmissionForm } from './AttemptSubmissionForm';
 import styles from './StudentDetailView.module.css';
 
 export interface StudentDetailViewProps {
@@ -19,6 +20,13 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
 
   const queryResult = useStudentDetail(id);
   const { status, data, error, refetch } = queryResult;
+
+  // Active modal states
+  const [attemptTargetCompetency, setAttemptTargetCompetency] = useState<{
+    id: string;
+    name: string;
+    code: string;
+  } | null>(null);
 
   // Safe fallback: Return to list with prior query parameters if available, else root /students
   const backTarget =
@@ -128,7 +136,6 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
                 className={styles.editStudentBtn}
                 data-version={data.data.version}
                 onClick={() => {
-                  /* TODO (Phase 4): Open edit student modal */
                   onEditStudent?.(data.data.id, data.data.version);
                 }}
                 aria-label={`Edit profile for ${data.data.name}`}
@@ -142,9 +149,27 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
           <CompetencyList
             competencies={data.data.competencies}
             onOpenAttemptModal={(competencyId) => {
-              /* TODO (Phase 4): Open attempt submission modal */
+              const item = data.data.competencies.find(
+                (c) => c.competency.id === competencyId
+              );
+              if (item) {
+                setAttemptTargetCompetency({
+                  id: item.competency.id,
+                  name: item.competency.name,
+                  code: item.competency.code
+                });
+              }
               onSubmitAttempt?.(data.data.id, competencyId);
             }}
+          />
+
+          {/* Attempt Submission Modal */}
+          <AttemptSubmissionForm
+            isOpen={attemptTargetCompetency !== null}
+            onClose={() => setAttemptTargetCompetency(null)}
+            studentId={data.data.id}
+            competency={attemptTargetCompetency}
+            onSuccess={() => void refetch()}
           />
         </div>
       )}
