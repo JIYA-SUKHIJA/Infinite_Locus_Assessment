@@ -151,6 +151,63 @@ Phase 4 turns the detail view entry points into real, production-ready form moda
 
 ---
 
+## Phase 5 — Activity Log & Seeded Cross-Tenant Defect Resolution
+
+Phase 5 addresses two essential requirements: implementing the Student Activity Audit Log view (`ActivityLog.tsx`) and diagnosing and eliminating the seeded cross-tenant data leak defect across all trust boundaries.
+
+### 1. Seeded Defect: Root Cause Analysis (Part D Live Defense Guide)
+
+#### The Problem
+In multi-tenant SaaS systems, users or administrators may rapidly switch active tenant accounts. Under fast account switching, confidential student records belonging to Tenant A were intermittently displayed on the screen while logged into Tenant B.
+
+#### Root Causes Identified
+1. **Unsubscribed API Config Changes**:
+   - `config.ts` stored tenant identity in a module-level mutable singleton (`getApiConfig().tenantId`), with no notification/subscription mechanism. When `setApiConfig({ tenantId: 'tenant-B' })` was invoked, React hooks (`useStudents`, `useStudentDetail`, `useStudentActivity`) were not notified and did not trigger a re-fetch.
+2. **Asynchronous In-Flight Race Conditions**:
+   - When a slow request was initiated under Tenant A, switching to Tenant B left Request A in flight. When Request A resolved 200ms later, the hook checked sequence tokens (`currentSeq === sequenceRef.current`) which were only incremented within individual hooks and were completely unaware of `tenantId`. Request A's promise resolution wrote Tenant A's private payload into state while under Tenant B's active session.
+3. **Stale State Retention Across Tenant Boundary (`prev.data` Preservation)**:
+   - In Phases 2 & 3, the `refreshing` state preserved `prev.data` to prevent layout shifts during query/filter changes. When transitioning across tenant boundaries, preserving `prev.data` kept Tenant A's records visible on screen while Tenant B was loading or if Tenant B's query failed.
+
+#### The Fix at the Trust Boundary
+- **Subscriber Event Registry in [`src/api/config.ts`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/api/config.ts)**:
+  - Added `subscribeApiConfig(listener)` so all data hooks are immediately notified when `tenantId` changes.
+  - Subscriptions clean up automatically on component unmount (`useEffect` return cleanup), completely preventing memory leaks.
+- **Request-Instance & Tenant Tagging in Hooks**:
+  - Each request captures both a monotonic sequence token (`currentSeq = ++sequenceRef.current`) and the current tenant ID (`currentTenantId = getApiConfig().tenantId`).
+  - Response resolution verifies both:
+    ```typescript
+    if (currentSeq !== sequenceRef.current || currentTenantId !== getApiConfig().tenantId) {
+      return; // Instantly discard stale / cross-tenant responses
+    }
+    ```
+- **UX vs. Security Decision — Immediate State Clearing**:
+  > **Explicit Rule: Security > Smooth UX**
+  > While parameter updates (e.g. search/pagination) preserve `prev.data` to avoid UI flashing, **tenant transitions MUST NEVER preserve `prev.data`**. Upon receiving a tenant change notification, the hook immediately sets `state = { status: 'loading', data: null, error: null }` and aborts all in-flight requests from the previous tenant.
+
+#### Test Verification Proof
+- `tests/routes/tenantSwitchLeak.test.tsx` explicitly reproduces the bug:
+  - Dispatches slow in-flight request for Tenant A (200ms) with confidential data, triggers fast account switch to Tenant B (30ms).
+  - Confirms red-to-green transition: before the fix, Tenant A's confidential student rendered under Tenant B; after the fix, Tenant A data is guaranteed `null` and Tenant B's public record renders cleanly.
+  - Tests rapid flip-flop (Tenant A -> Tenant B -> Tenant A) proving that an older in-flight request from Tenant A cannot win the race due to per-request sequence tagging.
+
+---
+
+### 2. Student Activity Audit Log View
+
+- **Component**: [`ActivityLog.tsx`](file:///d:/Infinite%20locus_Assessment/Part%20B/src/routes/students/%5Bid%5D/ActivityLog.tsx).
+- **Discriminated State Machine**: Seamlessly handles `loading`, `refreshing`, `success`, `empty` (friendly "No audit activity recorded" placeholder), and `error` (with retry button).
+- **Bounded Pagination**:
+  - Fixed page size (`pageSize = 10`), bounded page controls (`1` to `totalPages`), with previous/next controls disabled at boundaries (`!hasPrevPage`, `!hasNextPage`).
+- **Safe Event Rendering (No Untrusted JSON Dumps)**:
+  - Formats Mongo-sourced audit event payloads using safe, type-guarded property extractors:
+    - `ATTEMPT_SUBMITTED`: Formatted score, max score, passed badge, competency code, and logging actor.
+    - `READINESS_UPDATED`: Displays previous status and formatted readiness badge.
+    - `PROFILE_UPDATED`: Displays human-readable list of modified attributes.
+    - `STATUS_OVERRIDDEN`: Displays override justification reason and authorizing instructor.
+  - Raw JSON strings and unvalidated external structures are never rendered into the DOM.
+
+---
+
 ## Directory Structure
 
 ```
@@ -158,14 +215,14 @@ src/
 ├── App.tsx                        # Router configuration (/students and /students/:id)
 ├── api/
 │   ├── client.ts                  # Typed fetchApi client & ApiError / ApiValidationError
-│   ├── config.ts                  # Tenant ID & base URL configuration
+│   ├── config.ts                  # Tenant context store with subscription event registry
 │   ├── schemas.ts                 # Fail-closed Zod schemas for all endpoints
 │   └── hooks/
 │       ├── index.ts               # Hook exports
 │       ├── usePatchStudent.ts     # Patch hook with 409 conflict handling
-│       ├── useStudentActivity.ts  # Mongo audit log activity stream
-│       ├── useStudentDetail.ts    # Student detail by ID with version
-│       ├── useStudents.ts         # Paginated student list with race protection
+│       ├── useStudentActivity.ts  # Tenant-safe activity audit log hook
+│       ├── useStudentDetail.ts    # Tenant-safe student detail hook
+│       ├── useStudents.ts         # Tenant-safe paginated student list hook
 │       └── useSubmitAttempt.ts    # Attempt submission with Idempotency-Key
 ├── routes/
 │   └── students/
@@ -181,6 +238,7 @@ src/
 │       └── [id]/                  # Detail view sub-route
 │           ├── index.ts           # Detail component exports
 │           ├── CompetencyList.tsx # Dynamic competency evidence + attempt trigger
+│           ├── ActivityLog.tsx    # Safe student activity timeline & audit log
 │           ├── StudentDetailView.tsx # Detail container + non-disclosure not-found
 │           ├── StudentDetailView.module.css # Detail view & modal responsive styles
 │           ├── AttemptSubmissionForm.tsx # Attempt submission modal with idempotency
@@ -198,7 +256,9 @@ tests/
 └── routes/
     ├── students.test.tsx          # List view integration & debounced race tests
     ├── studentDetail.test.tsx     # Detail view integration & non-disclosure tests
-    └── forms.test.tsx             # Attempt & edit form integration + conflict tests
+    ├── forms.test.tsx             # Attempt & edit form integration + conflict tests
+    ├── tenantSwitchLeak.test.tsx  # Cross-tenant data leak reproduction & isolation tests
+    └── activity.test.tsx          # Activity log safe rendering & bounded pagination tests
 ```
 
 ---
@@ -206,7 +266,7 @@ tests/
 ## Running Verification
 
 ```powershell
-# Run all Vitest test suites (51 tests)
+# Run all Vitest test suites (57 tests)
 npm run test
 
 # Run TypeScript strict typecheck
