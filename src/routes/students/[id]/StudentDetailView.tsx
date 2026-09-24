@@ -5,6 +5,7 @@ import { StatusBadge } from '../StatusBadge';
 import { CompetencyList } from './CompetencyList';
 import { AttemptSubmissionForm } from './AttemptSubmissionForm';
 import { StudentEditForm } from './StudentEditForm';
+import { ActivityLog } from './ActivityLog';
 import styles from './StudentDetailView.module.css';
 
 export interface StudentDetailViewProps {
@@ -165,6 +166,9 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
               onSubmitAttempt?.(data.data.id, competencyId);
             }}
           />
+
+          {/* Student Activity & Audit Log */}
+          <ActivityLog studentId={data.data.id} />
 
           {/* Attempt Submission Modal */}
           <AttemptSubmissionForm
