@@ -211,6 +211,28 @@ In multi-tenant SaaS systems, users or administrators may rapidly switch active 
 
 ---
 
+## Auth & Session Flow (Demo Scope)
+
+The application includes an authentication and tenant session boundary implemented via a client-side seeded persona picker (`/login`) and route protection (`ProtectedRoute.tsx`):
+
+### 1. Seeded Persona Selector (`src/mocks/seedIdentities.ts` & `src/routes/login/LoginPage.tsx`)
+- Allows users to select from preconfigured multi-tenant personas:
+  - **Tenant Blue — Admin** (`tenant-blue`, role: `admin`, token: `demo-token-blue-admin`)
+  - **Tenant Green — Evaluator** (`tenant-green`, role: `evaluator`, token: `demo-token-green-eval`)
+  - **Tenant Amber — Viewer** (`tenant-amber`, role: `viewer`, token: `demo-token-amber-viewer`)
+- Accessible `<select>` with auto-focus and keyboard submission.
+- Preserves the attempted destination route upon redirect (e.g. attempting to view `/students/student-123` redirects to `/login` and resumes back to the target route after signing in).
+
+### 2. Route Protection & Reactive Sync (`src/routes/ProtectedRoute.tsx` & `src/api/hooks/useAuth.ts`)
+- `ProtectedRoute` inspects active session status via `useAuth()` (backed by React 18's `useSyncExternalStore`), immediately redirecting unauthenticated traffic to `/login`.
+- `Navbar.tsx` reflects active tenant context and provides an accessible **Sign Out** button that clears session tokens and returns to `/login`.
+
+### 3. Production Scope Differences
+- **Current Stand-In**: In-memory bearer token stored in `ApiConfig` and verified via MSW `requireAuth` 401 gate.
+- **Production Integration**: Plugs into standard OAuth2 / OIDC authorization code flow with PKCE or SAML 2.0 SSO, storing tokens in secure, `httpOnly`, `SameSite=Strict` cookies with background token refresh cycles.
+
+---
+
 ## Local Development with Mocks
 
 MSW Service Worker browser mocking is available for interactive local frontend development without requiring a live backend server:
@@ -223,7 +245,7 @@ MSW Service Worker browser mocking is available for interactive local frontend d
    ```powershell
    npm run dev
    ```
-3. Open `http://localhost:5173/students` in your browser. MSW intercepts all `/api/*` endpoints asynchronously in development mode before React mounts.
+3. Open `http://localhost:5173/` in your browser. Unauthenticated requests are automatically routed to `http://localhost:5173/login`.
 
 ---
 
@@ -231,17 +253,18 @@ MSW Service Worker browser mocking is available for interactive local frontend d
 
 ```
 src/
-├── App.tsx                        # Router configuration & Navbar integration
+├── App.tsx                        # Router configuration, LoginPage & ProtectedRoute integration
 ├── main.tsx                       # Async gated MSW browser worker bootstrap
 ├── styles/
 │   └── tokens.css                 # Light-mode enterprise design tokens
 ├── components/
-│   ├── Navbar.tsx                 # Brand navigation header with tenant visibility pill
+│   ├── Navbar.tsx                 # Brand navigation header with tenant pill & sign-out
 │   ├── Navbar.module.css          # Navbar responsive styles
 │   ├── EmptyState.tsx             # Reusable zero-state presentation component
 │   └── EmptyState.module.css      # Empty state layout and SVG icon styles
 ├── mocks/
-│   ├── handlers.ts                # Shared MSW v2 mock handlers (single source of truth)
+│   ├── seedIdentities.ts          # Seeded multi-tenant demo personas
+│   ├── handlers.ts                # Shared MSW v2 mock handlers with 401 gate (single source of truth)
 │   └── browser.ts                 # Dev browser ServiceWorker setup
 ├── api/
 │   ├── client.ts                  # Typed fetchApi client & ApiError / ApiValidationError
@@ -249,12 +272,18 @@ src/
 │   ├── schemas.ts                 # Fail-closed Zod schemas for all endpoints
 │   └── hooks/
 │       ├── index.ts               # Hook exports
+│       ├── useAuth.ts             # Reactive session hook using useSyncExternalStore
 │       ├── usePatchStudent.ts     # Patch hook with 409 conflict handling
 │       ├── useStudentActivity.ts  # Tenant-safe activity audit log hook
 │       ├── useStudentDetail.ts    # Tenant-safe student detail hook
 │       ├── useStudents.ts         # Tenant-safe paginated student list hook
 │       └── useSubmitAttempt.ts    # Attempt submission with Idempotency-Key
 ├── routes/
+│   ├── ProtectedRoute.tsx         # Route boundary guard
+│   ├── login/
+│   │   ├── index.ts               # Login component export
+│   │   ├── LoginPage.tsx          # Accessible persona picker login form
+│   │   └── LoginPage.module.css   # Login card design token styling
 │   └── students/
 │       ├── index.ts               # Route component exports
 │       ├── useStudentsQueryParams.ts # URL search param synchronization
@@ -284,6 +313,7 @@ tests/
 ├── client.test.ts                 # fetchApi client, headers & error tests
 ├── hooks.test.ts                  # Hook race-condition & conflict tests
 └── routes/
+    ├── auth.test.tsx              # Login, ProtectedRoute, Navbar sign-out & 401 gate tests
     ├── students.test.tsx          # List view integration, debounced race & empty state tests
     ├── studentDetail.test.tsx     # Detail view integration & non-disclosure tests
     ├── forms.test.tsx             # Attempt & edit form integration + conflict tests
@@ -296,7 +326,7 @@ tests/
 ## Running Verification
 
 ```powershell
-# Run all Vitest test suites (60 tests)
+# Run all Vitest test suites (67 tests across 9 files)
 npm run test
 
 # Run TypeScript strict typecheck

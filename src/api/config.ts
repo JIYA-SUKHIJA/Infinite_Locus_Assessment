@@ -15,14 +15,20 @@ const config: ApiConfig = {
   authToken: null
 };
 
+let currentSnapshot: Readonly<ApiConfig> = Object.freeze({
+  baseUrl: '',
+  tenantId: null,
+  authToken: null
+});
+
 export type ApiConfigListener = (config: Readonly<ApiConfig>) => void;
 const listeners = new Set<ApiConfigListener>();
 
 const notifyListeners = (): void => {
-  const current = Object.freeze({ ...config });
+  currentSnapshot = Object.freeze({ ...config });
   listeners.forEach((listener) => {
     try {
-      listener(current);
+      listener(currentSnapshot);
     } catch (e) {
       console.error('Error in ApiConfig listener:', e);
     }
@@ -60,7 +66,7 @@ export const setApiConfig = (newConfig: Partial<ApiConfig>): void => {
 };
 
 export const getApiConfig = (): Readonly<ApiConfig> => {
-  return config;
+  return currentSnapshot;
 };
 
 export const resetApiConfig = (): void => {

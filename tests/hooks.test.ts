@@ -16,7 +16,8 @@ describe('API Hooks (Out-of-Order Race Protection & Discriminated Union States)'
   beforeEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-test-hooks'
+      tenantId: 'tenant-test-hooks',
+      authToken: 'mock-auth-token'
     });
   });
 

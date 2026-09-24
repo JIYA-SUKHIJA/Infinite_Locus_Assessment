@@ -22,7 +22,8 @@ describe('Activity Log Integration Tests', () => {
   beforeEach(() => {
     setApiConfig({
       baseUrl: 'https://api.test.example.com',
-      tenantId: 'tenant-activity-test'
+      tenantId: 'tenant-activity-test',
+      authToken: 'mock-auth-token'
     });
   });
 
