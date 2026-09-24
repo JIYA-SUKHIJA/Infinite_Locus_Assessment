@@ -296,7 +296,7 @@ tests/
 ## Running Verification
 
 ```powershell
-# Run all Vitest test suites (59 tests)
+# Run all Vitest test suites (60 tests)
 npm run test
 
 # Run TypeScript strict typecheck

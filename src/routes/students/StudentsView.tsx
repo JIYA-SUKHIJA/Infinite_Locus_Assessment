@@ -91,10 +91,7 @@ export const StudentsView: React.FC = () => {
             (() => {
               const hasActiveFilters = Boolean(
                 params.query.trim() !== '' ||
-                params.readinessStatus !== undefined ||
-                params.page > 1 ||
-                params.sortBy !== 'name' ||
-                params.sortOrder !== 'asc'
+                params.readinessStatus !== undefined
               );
 
               return hasActiveFilters ? (

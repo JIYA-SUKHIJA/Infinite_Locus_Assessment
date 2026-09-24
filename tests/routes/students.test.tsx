@@ -352,6 +352,35 @@ describe('StudentsView Integration Tests', () => {
     expect(screen.queryByText('Failed to load student data')).toBeNull();
   });
 
+  it('EMPTY STATE REGRESSION: sort alone (sortBy=summaryScore) without filters on empty cohort shows Variant B (empty cohort) copy', async () => {
+    server.use(
+      http.get('https://api.test.example.com/api/students', () => {
+        return HttpResponse.json({
+          data: [],
+          pagination: {
+            page: 1,
+            pageSize: 20,
+            totalItems: 0,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPrevPage: false
+          },
+          cohortAverageScore: 0
+        });
+      })
+    );
+
+    renderStudentsRoute(['/students?sortBy=summaryScore&sortOrder=desc']);
+
+    await waitFor(() => {
+      expect(screen.getByText('No students yet')).toBeDefined();
+    });
+
+    expect(screen.getByText('No student readiness records exist for this cohort yet.')).toBeDefined();
+    expect(screen.queryByText('Reset All Filters')).toBeNull();
+    expect(screen.queryByText('No students found')).toBeNull();
+  });
+
   it('ERROR STATE & RETRY: renders distinct error callout and re-triggers query on retry', async () => {
     let attemptCount = 0;
 
