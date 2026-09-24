@@ -7,11 +7,11 @@ import styles from './Navbar.module.css';
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, tenantId } = useAuth();
+  const { isAuthenticated, tenantId, user } = useAuth();
   const isStudentsActive = location.pathname.startsWith('/students');
 
   const handleSignOut = () => {
-    setApiConfig({ tenantId: null, authToken: null });
+    setApiConfig({ tenantId: null, authToken: null, user: null });
     navigate('/login', { replace: true });
   };
 
@@ -30,6 +30,13 @@ export const Navbar: React.FC = () => {
 
         {isAuthenticated && (
           <div className={styles.navRight}>
+            {user && (
+              <div className={styles.userInfo} data-testid="navbar-user-info">
+                <span className={styles.userName}>{user.name}</span>
+                <span className={styles.roleBadge}>{user.role}</span>
+              </div>
+            )}
+
             <div className={styles.tenantBadge} data-testid="navbar-tenant-badge">
               <span className={styles.tenantLabel}>Tenant:</span>
               <span className={styles.tenantValue}>{tenantId || 'default'}</span>

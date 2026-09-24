@@ -1,11 +1,13 @@
 import { useSyncExternalStore } from 'react';
 import { subscribeApiConfig, getApiConfig, ApiConfig } from '../config';
+import { AuthUser } from '../schemas';
 
 export interface AuthState {
   isAuthenticated: boolean;
   tenantId: string | null;
   authToken: string | null;
   baseUrl: string;
+  user: AuthUser | null;
 }
 
 /**
@@ -24,6 +26,7 @@ export function useAuth(): AuthState {
     isAuthenticated: Boolean(config.authToken),
     tenantId: config.tenantId,
     authToken: config.authToken,
-    baseUrl: config.baseUrl
+    baseUrl: config.baseUrl,
+    user: config.user
   };
 }

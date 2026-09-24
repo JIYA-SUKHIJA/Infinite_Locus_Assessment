@@ -7,9 +7,9 @@
   background-color: var(--color-bg);
 }
 
-.loginCard {
+.card {
   width: 100%;
-  max-width: 460px;
+  max-width: 480px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -52,55 +52,6 @@
   line-height: 1.4;
 }
 
-.demoPresets {
-  margin-bottom: 1.5rem;
-  padding: 0.875rem;
-  background-color: var(--color-bg-subtle);
-  border: 1px dashed #CBD5E1;
-  border-radius: var(--radius-md);
-}
-
-.demoPresetsTitle {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 0 0.625rem;
-}
-
-.presetChips {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.presetChip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.375rem 0.625rem;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  color: var(--color-text-primary);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: left;
-}
-
-.presetChip:hover {
-  border-color: var(--color-accent-primary);
-  background-color: var(--color-accent-primary-light);
-  color: var(--color-accent-primary);
-}
-
-.presetRole {
-  font-weight: 600;
-  color: var(--color-accent-primary);
-}
-
 .errorBanner {
   background-color: var(--badge-needs-prep-bg);
   border: 1px solid #FECACA;
@@ -130,7 +81,8 @@
   color: var(--color-text-primary);
 }
 
-.input {
+.input,
+.select {
   width: 100%;
   padding: 0.625rem 0.875rem;
   font-size: 0.875rem;
@@ -143,7 +95,8 @@
   box-sizing: border-box;
 }
 
-.input:focus {
+.input:focus,
+.select:focus {
   border-color: var(--color-accent-primary);
   box-shadow: var(--focus-ring);
 }
