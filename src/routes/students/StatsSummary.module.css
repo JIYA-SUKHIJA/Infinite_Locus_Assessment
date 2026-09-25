@@ -3,6 +3,7 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
+  perspective: 1000px;
 }
 
 .statCard {
@@ -15,12 +16,17 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 0.5rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
 }
 
-.statCard:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+@media (hover: hover) and (pointer: fine) {
+  .statCard:hover {
+    transform: translateY(-4px) translateZ(12px) rotateX(1.5deg);
+    box-shadow: var(--shadow-lg), 0 8px 16px -4px rgba(88, 80, 236, 0.08);
+    border-color: rgba(88, 80, 236, 0.25);
+  }
 }
 
 .cardHeader {
