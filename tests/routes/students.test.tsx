@@ -505,4 +505,66 @@ describe('StudentsView Integration Tests', () => {
     expect(badge.textContent).toContain('tenant-beta');
     unmount();
   });
+
+  it('STATS SUMMARY: correctly distinguishes whole-cohort aggregates from page-level status counts', async () => {
+    server.use(
+      http.get('https://api.test.example.com/api/students', () => {
+        return HttpResponse.json({
+          data: [
+            { ...mockStudentSummary, id: 's1', name: 'Student 1', readinessStatus: 'READY' },
+            { ...mockStudentSummary, id: 's2', name: 'Student 2', readinessStatus: 'READY' },
+            { ...mockStudentSummary, id: 's3', name: 'Student 3', readinessStatus: 'NEARLY_READY' },
+            { ...mockStudentSummary, id: 's4', name: 'Student 4', readinessStatus: 'DEVELOPING' },
+            { ...mockStudentSummary, id: 's5', name: 'Student 5', readinessStatus: 'INCOMPLETE' }
+          ],
+          pagination: {
+            page: 1,
+            pageSize: 20,
+            totalItems: 50, // Proves totalItems (50) is used, NOT data.length (5)
+            totalPages: 3,
+            hasNextPage: true,
+            hasPrevPage: false
+          },
+          cohortAverageScore: 76.8
+        });
+      })
+    );
+
+    renderStudentsRoute();
+
+    // Settle to success
+    await waitFor(() => {
+      expect(screen.getAllByText('Student 1').length).toBeGreaterThan(0);
+    });
+
+    const statsRegion = screen.getByRole('region', {
+      name: 'Cohort and page readiness summary statistics'
+    });
+
+    // 1. Whole-Cohort Aggregates
+    expect(statsRegion.textContent).toContain('50'); // totalItems === 50
+    expect(statsRegion.textContent).toContain('76.8%'); // cohortAverageScore === 76.8%
+
+    // 2. Page-level breakdowns
+    // Ready (this page): 2
+    // In Progress (this page): 2 (1 NEARLY_READY + 1 DEVELOPING)
+    const statCards = statsRegion.querySelectorAll('article');
+    expect(statCards.length).toBe(4);
+
+    // Card 1: Total Students -> 50
+    expect(statCards[0].textContent).toContain('Total Students');
+    expect(statCards[0].textContent).toContain('50');
+
+    // Card 2: Cohort Avg Score -> 76.8%
+    expect(statCards[1].textContent).toContain('Cohort Avg Score');
+    expect(statCards[1].textContent).toContain('76.8%');
+
+    // Card 3: Ready (this page) -> 2
+    expect(statCards[2].textContent).toContain('Ready (this page)');
+    expect(statCards[2].textContent).toContain('2');
+
+    // Card 4: In Progress (this page) -> 2
+    expect(statCards[3].textContent).toContain('In Progress (this page)');
+    expect(statCards[3].textContent).toContain('2');
+  });
 });
