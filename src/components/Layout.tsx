@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar } from './Navbar';
+import { Footer } from './Footer';
 import styles from './Layout.module.css';
 
 export interface LayoutProps {
@@ -13,6 +14,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className={styles.mainContainer}>
         {children}
       </div>
+      <Footer />
     </div>
   );
 };
