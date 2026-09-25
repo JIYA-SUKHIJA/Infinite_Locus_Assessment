@@ -4,5 +4,6 @@ export * from './StatusFilter';
 export * from './StatusBadge';
 export * from './StudentTable';
 export * from './Pagination';
+export * from './StatsSummary';
 export * from './useStudentsQueryParams';
 export * from './[id]';

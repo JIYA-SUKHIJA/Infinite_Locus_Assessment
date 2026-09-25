@@ -5,6 +5,7 @@ import { SearchInput } from './SearchInput';
 import { StatusFilter } from './StatusFilter';
 import { StudentTable } from './StudentTable';
 import { Pagination } from './Pagination';
+import { StatsSummary } from './StatsSummary';
 import { EmptyState } from '../../components/EmptyState';
 import styles from './StudentsView.module.css';
 
@@ -28,13 +29,8 @@ export const StudentsView: React.FC = () => {
       <header className={styles.headerSection}>
         <div className={styles.titleRow}>
           <h1 className={styles.pageTitle}>Student Readiness Control Center</h1>
-          {data && (
-            <div className={styles.cohortStatBadge}>
-              Cohort Average Readiness Score:{' '}
-              <strong>{data.cohortAverageScore.toFixed(1)}%</strong>
-            </div>
-          )}
         </div>
+        {data && <StatsSummary data={data} />}
       </header>
 
       {/* Controls Bar: Search & Status Filters */}
