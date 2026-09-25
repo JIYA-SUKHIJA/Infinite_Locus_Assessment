@@ -544,22 +544,34 @@
 .actionBtn {
   background: var(--color-accent-primary);
   color: #ffffff;
-  border: none;
+  border: 1px solid var(--color-accent-primary);
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .actionBtn:hover {
   background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
+  box-shadow: 0 4px 12px rgba(88, 80, 236, 0.25);
+}
+
+.actionBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .actionBtn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.actionBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), 0 4px 12px rgba(88, 80, 236, 0.25);
 }
 
 /* Error Callout State */
@@ -589,22 +601,34 @@
 .retryBtn {
   background: #dc2626;
   color: #ffffff;
-  border: none;
+  border: 1px solid #dc2626;
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .retryBtn:hover {
   background: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.retryBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
 }
 
 .retryBtn:focus-visible {
   outline: none;
-  box-shadow: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35);
+}
+
+.retryBtn:hover:focus-visible {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35), 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
 .visuallyHidden {

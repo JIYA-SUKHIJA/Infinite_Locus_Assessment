@@ -131,23 +131,34 @@
 .editStudentBtn {
   background: var(--color-accent-primary);
   color: #ffffff;
-  border: none;
+  border: 1px solid var(--color-accent-primary);
   padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease;
   box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .editStudentBtn:hover {
   background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
+  box-shadow: 0 4px 12px rgba(88, 80, 236, 0.25);
+}
+
+.editStudentBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .editStudentBtn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.editStudentBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), 0 4px 12px rgba(88, 80, 236, 0.25);
 }
 
 /* Refreshing Banner */
@@ -320,18 +331,28 @@
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .submitAttemptBtn:hover {
   background: var(--color-accent-primary-light);
   border-color: var(--color-accent-primary);
   color: var(--color-accent-primary);
+  box-shadow: 0 2px 6px rgba(88, 80, 236, 0.15);
+}
+
+.submitAttemptBtn:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 .submitAttemptBtn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.submitAttemptBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), 0 2px 6px rgba(88, 80, 236, 0.15);
 }
 
 /* Statuses (Loading / Not Found / Error) */
@@ -384,17 +405,29 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  border: none;
-  transition: background 0.15s ease;
+  border: 1px solid var(--color-accent-primary);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .actionBtn:hover {
   background: var(--color-accent-primary-hover);
+  border-color: var(--color-accent-primary-hover);
+  box-shadow: 0 4px 12px rgba(88, 80, 236, 0.25);
+}
+
+.actionBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .actionBtn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.actionBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), 0 4px 12px rgba(88, 80, 236, 0.25);
 }
 
 .errorCallout {
@@ -423,17 +456,34 @@
 .retryBtn {
   background: #dc2626;
   color: #ffffff;
-  border: none;
+  border: 1px solid #dc2626;
   padding: 0.5rem 1.25rem;
   border-radius: var(--radius-md);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .retryBtn:hover {
   background: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.retryBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.2);
+}
+
+.retryBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35);
+}
+
+.retryBtn:hover:focus-visible {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.35), 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
 /* Modal Dialog & Overlay */
@@ -592,12 +642,26 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .cancelBtn:hover {
   background: var(--color-bg-subtle);
   color: var(--color-text-primary);
+  border-color: #CBD5E1;
+}
+
+.cancelBtn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.cancelBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.cancelBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring);
 }
 
 .submitBtn {
@@ -609,13 +673,19 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease;
   box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .submitBtn:hover {
   background: var(--color-accent-primary-hover);
   border-color: var(--color-accent-primary-hover);
+  box-shadow: 0 4px 12px rgba(88, 80, 236, 0.25);
+}
+
+.submitBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(88, 80, 236, 0.2);
 }
 
 .submitBtn:focus-visible {
@@ -623,10 +693,16 @@
   box-shadow: var(--focus-ring);
 }
 
+.submitBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), 0 4px 12px rgba(88, 80, 236, 0.25);
+}
+
 .submitBtn:disabled,
 .cancelBtn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Error & Conflict Banners */
@@ -682,17 +758,34 @@
 .conflictReloadBtn {
   background: var(--color-accent-orange);
   color: #ffffff;
-  border: none;
+  border: 1px solid var(--color-accent-orange);
   padding: 0.4rem 0.85rem;
   border-radius: var(--radius-md);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow: 0 1px 2px rgba(234, 88, 12, 0.2);
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .conflictReloadBtn:hover {
   background: #C2410C;
+  border-color: #C2410C;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+}
+
+.conflictReloadBtn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px rgba(234, 88, 12, 0.2);
+}
+
+.conflictReloadBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.35);
+}
+
+.conflictReloadBtn:hover:focus-visible {
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.35), 0 4px 12px rgba(234, 88, 12, 0.25);
 }
 
 .conflictDiscardBtn {
@@ -704,11 +797,21 @@
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .conflictDiscardBtn:hover {
   background: #FFF7ED;
+  border-color: #FB923C;
+}
+
+.conflictDiscardBtn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.conflictDiscardBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.35);
 }
 
 /* Activity & Audit Log Section */
@@ -739,18 +842,27 @@
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 }
 
 .refreshActivityBtn:hover {
   background: var(--color-bg-subtle);
   border-color: #CBD5E1;
   color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.refreshActivityBtn:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 .refreshActivityBtn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+.refreshActivityBtn:hover:focus-visible {
+  box-shadow: var(--focus-ring), var(--shadow-sm);
 }
 
 .refreshActivityBtn:disabled {
