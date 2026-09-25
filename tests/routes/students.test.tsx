@@ -552,19 +552,37 @@ describe('StudentsView Integration Tests', () => {
     expect(statCards.length).toBe(4);
 
     // Card 1: Total Students -> 50
-    expect(statCards[0].textContent).toContain('Total Students');
-    expect(statCards[0].textContent).toContain('50');
+    expect(statCards[0]?.textContent).toContain('Total Students');
+    expect(statCards[0]?.textContent).toContain('50');
 
     // Card 2: Cohort Avg Score -> 76.8%
-    expect(statCards[1].textContent).toContain('Cohort Avg Score');
-    expect(statCards[1].textContent).toContain('76.8%');
+    expect(statCards[1]?.textContent).toContain('Cohort Avg Score');
+    expect(statCards[1]?.textContent).toContain('76.8%');
 
     // Card 3: Ready (this page) -> 2
-    expect(statCards[2].textContent).toContain('Ready (this page)');
-    expect(statCards[2].textContent).toContain('2');
+    expect(statCards[2]?.textContent).toContain('Ready (this page)');
+    expect(statCards[2]?.textContent).toContain('2');
 
     // Card 4: In Progress (this page) -> 2
-    expect(statCards[3].textContent).toContain('In Progress (this page)');
-    expect(statCards[3].textContent).toContain('2');
+    expect(statCards[3]?.textContent).toContain('In Progress (this page)');
+    expect(statCards[3]?.textContent).toContain('2');
+  });
+
+  it('KEYBOARD SHORTCUT: pressing Ctrl+K / Cmd+K moves focus to search input', async () => {
+    renderStudentsRoute();
+
+    await waitFor(() => {
+      expect(screen.getByRole('searchbox')).toBeDefined();
+    });
+
+    const searchInput = screen.getByRole('searchbox');
+    expect(document.activeElement).not.toBe(searchInput);
+
+    // Fire Ctrl+K on window
+    act(() => {
+      fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+    });
+
+    expect(document.activeElement).toBe(searchInput);
   });
 });

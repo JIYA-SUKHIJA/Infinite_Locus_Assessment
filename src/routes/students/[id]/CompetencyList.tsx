@@ -75,6 +75,15 @@ export const CompetencyList: React.FC<CompetencyListProps> = ({
                       </span>
                     </div>
 
+                    <div className={styles.progressBarContainer} aria-hidden="true">
+                      <div
+                        className={styles.progressBarFill}
+                        style={{
+                          width: `${Math.min(100, Math.max(0, (latestAttempt.score / latestAttempt.maxScore) * 100))}%`
+                        }}
+                      />
+                    </div>
+
                     <div className={styles.evidenceRow}>
                       <span className={styles.evidenceLabel}>Result</span>
                       <span

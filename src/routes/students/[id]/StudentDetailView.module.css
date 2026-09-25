@@ -252,6 +252,22 @@
   font-size: 0.875rem;
 }
 
+.progressBarContainer {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: 0.125rem 0;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-teal));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
 .evidenceLabel {
   color: var(--color-text-muted);
   font-size: 0.8125rem;
