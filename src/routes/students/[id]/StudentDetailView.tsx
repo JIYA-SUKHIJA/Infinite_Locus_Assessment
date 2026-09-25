@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useStudentDetail } from '../../../api/hooks/useStudentDetail';
 import { StatusBadge } from '../StatusBadge';
+import { Breadcrumb } from './Breadcrumb';
 import { CompetencyList } from './CompetencyList';
 import { AttemptSubmissionForm } from './AttemptSubmissionForm';
 import { StudentEditForm } from './StudentEditForm';
@@ -48,12 +49,17 @@ export const StudentDetailView: React.FC<StudentDetailViewProps> = ({
 
   return (
     <main className={styles.container} aria-label="Student Detail View">
-      {/* Back Navigation preserving list query state */}
-      <nav className={styles.backNav} aria-label="Breadcrumb navigation">
+      {/* Top Navigation: Breadcrumb and Back Navigation */}
+      <div className={styles.topNavigation}>
+        <Breadcrumb
+          studentName={data?.data.name}
+          isLoading={status === 'loading'}
+          backTarget={backTarget}
+        />
         <Link to={backTarget} className={styles.backLink}>
           ← Back to student list
         </Link>
-      </nav>
+      </div>
 
       {/* Refreshing Indicator (Non-blocking: visible details stay displayed) */}
       {status === 'refreshing' && (

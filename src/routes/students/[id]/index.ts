@@ -3,3 +3,4 @@ export * from './CompetencyList';
 export * from './AttemptSubmissionForm';
 export * from './StudentEditForm';
 export * from './ActivityLog';
+export * from './Breadcrumb';

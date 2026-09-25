@@ -128,6 +128,7 @@ describe('StudentDetailView Integration Tests', () => {
     });
 
     const notFoundHtml404 = container404.querySelector('main')?.innerHTML;
+    const breadcrumbHtml404 = container404.querySelector('nav[aria-label="Breadcrumb navigation"]')?.innerHTML;
     unmount();
 
     // 2. Render 403 response (cross-tenant denied)
@@ -147,9 +148,13 @@ describe('StudentDetailView Integration Tests', () => {
     });
 
     const notFoundHtml403 = container403.querySelector('main')?.innerHTML;
+    const breadcrumbHtml403 = container403.querySelector('nav[aria-label="Breadcrumb navigation"]')?.innerHTML;
 
-    // Strict byte-for-byte HTML and copy equality assertion
+    // Strict byte-for-byte HTML and copy equality assertion across entire main and breadcrumb
+    expect(breadcrumbHtml404).toBeDefined();
+    expect(breadcrumbHtml404).toBe(breadcrumbHtml403);
     expect(notFoundHtml404).toBe(notFoundHtml403);
+    expect(screen.getByText('Student Profile')).toBeDefined();
     expect(screen.getByText('The requested student record does not exist or you do not have permission to view it.')).toBeDefined();
   });
 
@@ -218,7 +223,7 @@ describe('StudentDetailView Integration Tests', () => {
     renderDetailRoute(['/students/student-123']);
 
     await waitFor(() => {
-      expect(screen.getByText('Alex Rivera')).toBeDefined();
+      expect(screen.getAllByText('Alex Rivera').length).toBeGreaterThan(0);
     });
 
     // Second call starts
